@@ -1,0 +1,93 @@
+{
+  "task": "train_stage2_dpfnet",
+  "name": "stage2_dpfnet_frozen_prdnet",
+  "model": "PRFNet",
+  "gpu_ids": [0],
+  "n_channels": 3,
+
+  "datasets": {
+    "train": {
+      "name": "polar_4angles_train",
+      "dataset_type": "polar_4angles",
+      "dataroot_0deg": "/root/autodl-tmp/PODB/RGB00",
+      "dataroot_45deg": "/root/autodl-tmp/PODB/RGB45",
+      "dataroot_90deg": "/root/autodl-tmp/PODB/RGB90",
+      "dataroot_135deg": "/root/autodl-tmp/PODB/RGB135",
+      "theta_min": 0,
+      "theta_max": 180,
+      "H_size": 128,
+      "n_channels": 3,
+      "phase": "train",
+      "dataloader_batch_size": 8,
+      "dataloader_num_workers": 4,
+      "dataloader_shuffle": true
+    },
+
+    "test": {
+      "name": "polar_4angles_test",
+      "dataset_type": "polar_4angles",
+      "dataroot_0deg": "/root/autodl-tmp/PODB/RGB00",
+      "dataroot_45deg": "/root/autodl-tmp/PODB/RGB45",
+      "dataroot_90deg": "/root/autodl-tmp/PODB/RGB90",
+      "dataroot_135deg": "/root/autodl-tmp/PODB/RGB135",
+      "theta_min": 0,
+      "theta_max": 180,
+      "H_size": 128,
+      "n_channels": 3,
+      "phase": "test",
+      "dataloader_batch_size": 1,
+      "dataloader_num_workers": 0,
+      "dataloader_shuffle": false
+    }
+  },
+
+  "netG": {
+    "net_type": "dpfnet",
+    "embed_dim": 96,
+    "Ex_depths": 2,
+    "Fusion_depths": 1,
+    "Re_depths": 2,
+    "use_sscf": true
+  },
+
+  "path": {
+    "root": "Model",
+    "disk_i_opt_dir": "results/stage1/I_opt",
+    "pretrained_prdnet": "Model_podb/train_stage1_prdnet/prdnet_step_044000.pth",
+    "models": "Model/stage2_dpfnet/models",
+    "images": "Model/stage2_dpfnet/images",
+    "log": "Model/stage2_dpfnet/log"
+  },
+
+  "train": {
+    "manual_seed": 10,
+    "freeze_prdnet": true,
+    "use_disk_i_opt": false,
+    "disk_i_opt_dir": "results/stage1/I_opt",
+    "fusion_branch_input": "i_opt",
+    "enable_test_phase": true,
+    "test_reference_image_path": "/root/autodl-tmp/PODB/RGB00/1397.png",
+
+    "w_gradient": 1500.0,
+    "w_color": 100.0,
+    "color_loss_ref": "rhat",
+    "w_perceptual": 10.0,
+    "perceptual_ref": "iopt",
+
+    "G_optimizer_type": "adam",
+    "G_optimizer_lr": 0.0001,
+    "G_optimizer_wd": 0,
+    "G_optimizer_betas": [0.9, 0.999],
+
+    "G_scheduler_type": "MultiStepLR",
+    "G_scheduler_milestones": [50000, 100000, 150000],
+    "G_scheduler_gamma": 0.5,
+
+    "G_regularizer_clipgrad": 1.0,
+
+    "total_iters": 200000,
+    "checkpoint_test": 1000,
+    "checkpoint_save": 5000,
+    "checkpoint_print": 100
+  }
+}

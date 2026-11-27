@@ -1,0 +1,84 @@
+{
+  "task": "train_stage1_prdnet",
+  "name": "stage1_prdnet",
+  "model": "PRDNet",
+  "gpu_ids": [0],
+  "n_channels": 3,
+
+  "datasets": {
+    "train": {
+      "name": "polar_4angles_train",
+      "dataset_type": "polar_4angles",
+      "dataroot_0deg": "/root/autodl-tmp/PODB/RGB00",
+      "dataroot_45deg": "/root/autodl-tmp/PODB/RGB45",
+      "dataroot_90deg": "/root/autodl-tmp/PODB/RGB90",
+      "dataroot_135deg": "/root/autodl-tmp/PODB/RGB135",
+      "theta_min": 0,
+      "theta_max": 180,
+      "H_size": 128,
+      "n_channels": 3,
+      "phase": "train",
+      "dataloader_batch_size": 16,
+      "dataloader_num_workers": 4,
+      "dataloader_shuffle": true
+    },
+
+    "test": {
+      "name": "polar_4angles_test",
+      "dataset_type": "polar_4angles",
+      "dataroot_0deg": "/root/autodl-tmp/PODB/RGB00",
+      "dataroot_45deg": "/root/autodl-tmp/PODB/RGB45",
+      "dataroot_90deg": "/root/autodl-tmp/PODB/RGB90",
+      "dataroot_135deg": "/root/autodl-tmp/PODB/RGB135",
+      "theta_min": 0,
+      "theta_max": 180,
+      "H_size": 128,
+      "n_channels": 3,
+      "phase": "test",
+      "dataloader_batch_size": 1,
+      "dataloader_num_workers": 0,
+      "dataloader_shuffle": false
+    }
+  },
+
+  "netG": {
+    "net_type": "prdnet",
+    "in_channels": 3,
+    "out_channels": 3
+  },
+
+  "path": {
+    "root": "Model",
+    "pretrained_netG": null,
+    "models": "Model/stage1_prdnet/models",
+    "images": "Model/stage1_prdnet/images",
+    "log": "Model/stage1_prdnet/log"
+  },
+
+  "train": {
+    "manual_seed": 10,
+
+    "w_recon": 1.0,
+    "w_initialize": 0.1,
+    "w_suppress": 0.1,
+    "w_consist": 0.1,
+    "w_grad_polar": 0.1,
+    "grad_polar_k": 10.0,
+
+    "G_optimizer_type": "adam",
+    "G_optimizer_lr": 0.0001,
+    "G_optimizer_wd": 0,
+    "G_optimizer_betas": [0.9, 0.999],
+
+    "G_scheduler_type": "MultiStepLR",
+    "G_scheduler_milestones": [30000, 60000, 90000],
+    "G_scheduler_gamma": 0.5,
+
+    "G_regularizer_clipgrad": 1.0,
+
+    "total_iters": 100000,
+    "checkpoint_test": 1000,
+    "checkpoint_save": 5000,
+    "checkpoint_print": 100
+  }
+}

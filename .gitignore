@@ -1,0 +1,16 @@
+# Model weights (provided separately via cloud drive link)
+*.pth
+*.pt
+*.ckpt
+
+# Python cache & artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# OS / IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
